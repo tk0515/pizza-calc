@@ -24,8 +24,8 @@ def guestMain():
     while(inputOver == False):
         proper = False
         topping = input("> ")
-        for i in pizzaToppings:
-            if topping == i:
+        if topping in pizzaToppings:
+            if topping not in userToppings:
                 proper = True
                 userToppings.append(topping)
         if topping == "done":
@@ -49,6 +49,7 @@ def guestMain():
         calculation(number-remainder, remainder, userToppings)
 
 def calculation(multiple, remainder, toppings):
+    # Calculating number of pizzas #####################################################
     easyLarge = multiple / 8
     largeZa = int(easyLarge*3)
 
@@ -66,8 +67,8 @@ def calculation(multiple, remainder, toppings):
         else:
             largeZa += 1
     
+    # Calculating toppings ############################################################
     pizzaList = []
-
     if len(toppings) < (smallZa + largeZa):
         # maybe combine toppings? idk
         smallZaStr = ""
@@ -108,9 +109,29 @@ def calculation(multiple, remainder, toppings):
             for x in toppings:
                 pizza = "A large " + x + " pizza"
                 pizzaList.append(pizza)
-    else:
-        print("more")
 
+    else:
+        smallZaStr = ""
+        largeZaReplace = largeZa
+        smallZaReplace = smallZa
+        if "cheese" in toppings:
+            if smallZa == 1:
+                smallZaStr = "A small cheese pizza"
+                smallZaReplace -= 1
+            else:
+                pizzaList.append("A large cheese pizza")
+                largeZaReplace -= 1
+            toppings.remove("cheese")
+        for x in range(largeZaReplace):
+            pizza = "A large " + toppings[x] + " pizza"
+            pizzaList.append(pizza)
+        if smallZaReplace == 1:
+            pizza = "A small " + toppings[largeZa] + " pizza"
+            pizzaList.append(pizza)
+        elif len(smallZaStr) > 0:
+            pizzaList.append(smallZaStr)
+
+    # Printing out results ##################################################################
     print("You should order: ")
     if smallZa == 0:
         if largeZa == 1:
